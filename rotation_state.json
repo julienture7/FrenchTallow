@@ -1,0 +1,23 @@
+{
+  "product_order": [
+    "lemon",
+    "coffee",
+    "blood_orange",
+    "eucalyptus",
+    "pear",
+    "pineapple",
+    "vanilla",
+    "lavender",
+    "bergamot",
+    "lemongrass",
+    "honey",
+    "rosemary",
+    "peach",
+    "unscented",
+    "bulk"
+  ],
+  "current_index": 4,
+  "last_run_date": "2026-01-13",
+  "products_per_day": 4,
+  "articles_per_product": 1
+}
