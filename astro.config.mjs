@@ -12,7 +12,8 @@ export default defineConfig({
   },
   vite: {
     build: {
-      cssMinify: true
+      cssMinify: true,
+      cssCodeSplit: false
     }
   }
 });
