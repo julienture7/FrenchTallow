@@ -29,10 +29,10 @@ const imageModule = images[imagePath] ? await images[imagePath]() : null;
       <Image
         src={imageModule.default}
         alt={`${displayName} whipped tallow balm`}
-        widths={[285, 380, 452, 600]}
-        sizes="(max-width: 480px) 285px, (max-width: 768px) 380px, 285px"
+        widths={[285, 380, 570, 760, 1200]}
+        sizes="(max-width: 480px) 285px, (max-width: 768px) 380px, (max-width: 1024px) 570px, 760px"
         format="webp"
-        quality={75}
+        quality={85}
         loading="lazy"
         decoding="async"
       />
