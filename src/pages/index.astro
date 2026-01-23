@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroSection from '../components/HeroSection.astro';
+import WhySection from '../components/WhySection.astro';
+import ProductsSection from '../components/ProductsSection.astro';
+import ArticlesSection from '../components/ArticlesSection.astro';
+import { getCollection } from 'astro:content';
+
+// Get English articles for the homepage
+const allArticles = await getCollection('articles');
+const englishArticles = allArticles
+  .filter(article => article.data.language === 'en')
+  .sort((a, b) => new Date(b.data.generated_at).getTime() - new Date(a.data.generated_at).getTime());
+
+const articlesData = englishArticles.map(article => ({
+  title: article.data.title,
+  slug: article.data.slug,
+  product: article.data.product,
+  angle: article.data.angle,
+  generated_at: article.data.generated_at,
+  body: article.data.body
+}));
+---
+
+<BaseLayout
+  title="FrenchTallowSoap — Handcrafted Tallow Balms from France"
+  description="Handcrafted whipped tallow balms from grass-fed French cattle. Natural skincare your skin recognizes."
+  lang="en"
+>
+  <HeroSection lang="en" />
+  <WhySection lang="en" />
+  <ProductsSection lang="en" />
+  <ArticlesSection lang="en" articles={articlesData} />
+</BaseLayout>

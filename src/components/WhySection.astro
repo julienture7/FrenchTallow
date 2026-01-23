@@ -1,0 +1,68 @@
+---
+import WhyPoint from './WhyPoint.astro';
+import { getTranslations } from '../data/translations';
+
+interface Props {
+  lang?: string;
+}
+
+const { lang = 'en' } = Astro.props;
+const t = getTranslations(lang);
+
+const icons = {
+  shield: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+  clock: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
+  heart: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>',
+  star: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15 8L22 9L17 14L18 21L12 18L6 21L7 14L2 9L9 8L12 2Z"/></svg>'
+};
+
+const points = [
+  { icon: icons.shield, title: t.point1Title, text: t.point1Text },
+  { icon: icons.clock, title: t.point2Title, text: t.point2Text },
+  { icon: icons.heart, title: t.point3Title, text: t.point3Text },
+  { icon: icons.star, title: t.point4Title, text: t.point4Text }
+];
+---
+
+<section id="why" class="why-section" aria-labelledby="why-heading">
+  <div class="container">
+    <div class="why-header">
+      <h2 id="why-heading">{t.whyHeading}</h2>
+      <p>{t.whyText}</p>
+    </div>
+
+    <ul class="why-points" role="list">
+      {points.map(point => (
+        <WhyPoint icon={point.icon} title={point.title} text={point.text} />
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .why-section {
+    background: var(--bg-secondary);
+    padding: var(--space-lg) 0;
+  }
+
+  .why-header {
+    margin-bottom: var(--space-md);
+  }
+
+  .why-header h2 {
+    margin-bottom: var(--space-sm);
+    font-size: 1.25rem;
+  }
+
+  .why-header p {
+    max-width: var(--content-width);
+    font-size: 0.875rem;
+  }
+
+  .why-points {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-md);
+    list-style: none;
+  }
+</style>

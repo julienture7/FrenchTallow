@@ -1,0 +1,159 @@
+---
+import ProductCard from './ProductCard.astro';
+import { products } from '../data/config';
+import { getTranslations } from '../data/translations';
+
+interface Props {
+  lang?: string;
+}
+
+const { lang = 'en' } = Astro.props;
+const t = getTranslations(lang);
+
+const productEntries = Object.entries(products);
+---
+
+<section id="products" class="products-section" aria-labelledby="products-heading">
+  <div class="container">
+    <div class="section-header">
+      <h2 id="products-heading">{t.productsHeading}</h2>
+    </div>
+
+    <div class="filters" role="group" aria-label="Filter products by scent">
+      <fieldset>
+        <legend class="visually-hidden">Filter by scent category</legend>
+        <button type="button" class="filter-btn active" data-filter="all" aria-pressed="true">{t.filterAll}</button>
+        <button type="button" class="filter-btn" data-filter="citrus" aria-pressed="false">{t.filterCitrus}</button>
+        <button type="button" class="filter-btn" data-filter="warm" aria-pressed="false">{t.filterWarm}</button>
+        <button type="button" class="filter-btn" data-filter="herbal" aria-pressed="false">{t.filterHerbal}</button>
+        <button type="button" class="filter-btn" data-filter="floral" aria-pressed="false">{t.filterFloral}</button>
+      </fieldset>
+    </div>
+
+    <ul class="products-grid" id="productsGrid">
+      {productEntries.map(([key, product]) => (
+        <ProductCard product={product} productKey={key} lang={lang} />
+      ))}
+    </ul>
+  </div>
+</section>
+
+<script>
+  // Defer filter setup until idle
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(() => {
+      const filters = document.querySelector('.filters');
+      if (filters) {
+        filters.addEventListener('click', (e) => {
+          const btn = (e.target as HTMLElement).closest('.filter-btn');
+          if (!btn) return;
+          filters.querySelectorAll('.filter-btn').forEach(b => {
+            b.setAttribute('aria-pressed', 'false');
+            b.classList.remove('active');
+          });
+          btn.setAttribute('aria-pressed', 'true');
+          btn.classList.add('active');
+          const filter = (btn as HTMLElement).dataset.filter;
+          const grid = document.getElementById('productsGrid');
+          if (!grid) return;
+          grid.querySelectorAll('.product-card').forEach(card => {
+            const el = card as HTMLElement;
+            el.hidden = filter !== 'all' && el.dataset.category !== filter;
+          });
+        });
+      }
+    });
+  }
+</script>
+
+<style>
+  .products-section {
+    padding: 0 0 var(--space-md);
+  }
+
+  .section-header {
+    margin-bottom: var(--space-xs);
+    margin-top: var(--space-xs);
+  }
+
+  .section-header h2 {
+    margin-bottom: 0.125rem;
+    font-size: 1.125rem;
+  }
+
+  .section-header p {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: var(--space-sm);
+  }
+
+  .filters fieldset {
+    border: none;
+    display: contents;
+  }
+
+  .filter-btn {
+    background: transparent;
+    border: 1px solid var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    padding: var(--space-xs) var(--space-sm);
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    min-height: 32px;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--earth-light);
+    color: var(--text-primary);
+  }
+
+  .filter-btn[aria-pressed="true"],
+  .filter-btn.active {
+    background: var(--earth-deep);
+    border-color: var(--earth-deep);
+    color: var(--text-inverse);
+  }
+
+  .filter-btn:focus-visible {
+    outline: 2px solid var(--sage);
+    outline-offset: 2px;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--space-sm);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  @media (max-width: 1024px) {
+    .products-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .products-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-xs);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .products-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-xs);
+    }
+  }
+</style>

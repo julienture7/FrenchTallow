@@ -1,0 +1,55 @@
+---
+interface Props {
+  icon: string;
+  title: string;
+  text: string;
+}
+
+const { icon, title, text } = Astro.props;
+---
+
+<li class="why-point">
+  <div class="why-point-icon" aria-hidden="true">
+    <Fragment set:html={icon} />
+  </div>
+  <div>
+    <h3>{title}</h3>
+    <p>{text}</p>
+  </div>
+</li>
+
+<style>
+  .why-point {
+    display: flex;
+    gap: var(--space-sm);
+  }
+
+  .why-point-icon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-primary);
+    border-radius: var(--radius-sm);
+    color: var(--sage);
+  }
+
+  .why-point-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .why-point h3 {
+    font-size: 0.875rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .why-point p {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+</style>

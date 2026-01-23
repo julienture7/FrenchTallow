@@ -1,0 +1,142 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getTranslations } from '../data/translations';
+
+interface Props {
+  title: string;
+  description?: string;
+  lang?: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+}
+
+const {
+  title,
+  description = 'Handcrafted whipped tallow balms from grass-fed French cattle. Natural skincare your skin recognizes.',
+  lang = 'en',
+  canonicalUrl,
+  ogImage = '/assets/images/og-image.png'
+} = Astro.props;
+
+const t = getTranslations(lang);
+const siteUrl = 'https://frenchtallow.com';
+const fullCanonicalUrl = canonicalUrl || siteUrl;
+---
+
+<!DOCTYPE html>
+<html lang={lang} translate="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google" content="notranslate">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>{title}</title>
+  <meta name="description" content={description}>
+  <link rel="canonical" href={fullCanonicalUrl}>
+
+  <!-- Open Graph -->
+  <meta property="og:title" content={title}>
+  <meta property="og:description" content={description}>
+  <meta property="og:type" content="website">
+  <meta property="og:url" content={fullCanonicalUrl}>
+  <meta property="og:image" content={`${siteUrl}${ogImage}`}>
+  <meta property="og:site_name" content="FrenchTallowSoap">
+  <meta property="og:locale" content={lang}>
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content={title}>
+  <meta name="twitter:description" content={description}>
+  <meta name="twitter:image" content={`${siteUrl}${ogImage}`}>
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "FrenchTallowSoap",
+    "url": siteUrl,
+    "logo": `${siteUrl}/assets/images/logo.png`,
+    "description": description,
+    "sameAs": ["https://www.etsy.com/shop/FrenchTallowSoap"],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer service",
+      "availableLanguage": ["English", "French", "German", "Spanish", "Italian"]
+    }
+  })} />
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "FrenchTallowSoap",
+    "url": siteUrl,
+    "description": "Handcrafted natural tallow skincare from France",
+    "publisher": {
+      "@type": "Organization",
+      "name": "FrenchTallowSoap"
+    }
+  })} />
+  <!-- Preconnect hints for third-party resources -->
+  <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+</head>
+<body>
+  <a href="#main" class="skip-link">{t.skipToMain}</a>
+
+  <Header lang={lang} />
+
+  <main id="main">
+    <slot />
+  </main>
+
+  <Footer lang={lang} />
+
+  <!-- Google Analytics - load on first interaction -->
+  <script is:inline>
+    (function() {
+      var loaded = false;
+      function loadGA() {
+        if (loaded) return;
+        loaded = true;
+        var script = document.createElement('script');
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-FNX57VXL9L';
+        script.async = true;
+        document.head.appendChild(script);
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', 'G-FNX57VXL9L');
+      }
+      ['scroll', 'click', 'touchstart', 'keydown'].forEach(function(evt) {
+        window.addEventListener(evt, loadGA, {once: true, passive: true});
+      });
+      // Fallback: load after 5 seconds if no interaction
+      setTimeout(loadGA, 5000);
+    })();
+  </script>
+
+  <!-- Auto language detection -->
+  <script is:inline define:vars={{ supportedLanguages: ['fr', 'de', 'es', 'it', 'pt', 'nl', 'pl', 'sv', 'da', 'fi', 'el', 'cs', 'ro', 'hu', 'sk', 'bg', 'hr', 'sl', 'lt', 'lv', 'et', 'mt', 'ga'] }}>
+    (function() {
+      // Skip if user already chose a language (stored in localStorage)
+      if (localStorage.getItem('preferredLang')) return;
+
+      // Get current path language
+      const pathLang = window.location.pathname.split('/')[1];
+      if (pathLang && pathLang.length === 2) return; // Already on a language page
+
+      // Get browser language
+      const browserLang = navigator.language.slice(0, 2);
+
+      // Check if supported
+      if (supportedLanguages.includes(browserLang)) {
+        // Redirect to language-specific version
+        window.location.href = '/' + browserLang + '/';
+      }
+      // Default to English (stay on current page)
+    })();
+  </script>
+</body>
+</html>

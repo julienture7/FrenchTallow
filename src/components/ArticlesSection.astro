@@ -1,0 +1,95 @@
+---
+import ArticleCard from './ArticleCard.astro';
+import { getTranslations } from '../data/translations';
+
+interface Props {
+  lang?: string;
+  articles?: Array<{
+    title: string;
+    slug: string;
+    product: string;
+    angle: string;
+    generated_at: string;
+    body: string;
+  }>;
+}
+
+const { lang = 'en', articles = [] } = Astro.props;
+const t = getTranslations(lang);
+
+// Display all articles
+const displayArticles = articles;
+---
+
+<section id="articles" class="articles-section" aria-labelledby="articles-heading">
+  <div class="container">
+    <div class="articles-header">
+      <h2 id="articles-heading">{t.articlesHeading}</h2>
+      {displayArticles.length > 0 && (
+        <span class="articles-count" aria-live="polite">
+          {displayArticles.length} {t.articles}
+        </span>
+      )}
+    </div>
+
+    {displayArticles.length > 0 ? (
+      <ul class="articles-grid">
+        {displayArticles.map(article => (
+          <ArticleCard
+            title={article.title}
+            slug={article.slug}
+            product={article.product}
+            angle={article.angle}
+            excerpt={article.body.substring(0, 150) + '...'}
+            date={article.generated_at}
+            lang={lang}
+          />
+        ))}
+      </ul>
+    ) : (
+      <p class="loading">Articles coming soon.</p>
+    )}
+  </div>
+</section>
+
+<style>
+  .articles-section {
+    padding: var(--space-4xl) 0;
+    background: var(--bg-secondary);
+  }
+
+  .articles-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-bottom: var(--space-2xl);
+  }
+
+  .articles-count {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+
+  .articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--space-xl);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .loading {
+    text-align: center;
+    padding: var(--space-3xl);
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 768px) {
+    .articles-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

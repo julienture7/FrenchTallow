@@ -1,0 +1,124 @@
+---
+import { Image } from 'astro:assets';
+import type { Product } from '../data/config';
+import { getProductTranslation } from '../data/product-translations';
+
+interface Props {
+  product: Product;
+  productKey: string;
+  lang?: string;
+}
+
+const { product, productKey, lang = 'en' } = Astro.props;
+
+// Get translated product name and scent benefits
+const translatedProduct = getProductTranslation(productKey, lang);
+const displayName = translatedProduct.name || product.name;
+const displayBenefits = translatedProduct.scentBenefits || product.scentBenefits;
+
+// Dynamic import for product images
+const images = import.meta.glob<{ default: ImageMetadata }>('/src/assets/images/*.png');
+const imagePath = `/src/assets/images/${product.image}`;
+const imageModule = images[imagePath] ? await images[imagePath]() : null;
+---
+
+<li class="product-item">
+<a href={product.link} target="_blank" rel="noopener" class="product-card" data-category={product.category}>
+  <div class="product-image">
+    {imageModule ? (
+      <Image
+        src={imageModule.default}
+        alt={`${displayName} whipped tallow balm`}
+        width={600}
+        height={600}
+        format="webp"
+        quality={80}
+        loading="lazy"
+      />
+    ) : (
+      <img
+        src={`/assets/images/${product.image}`}
+        alt={`${displayName} whipped tallow balm`}
+        loading="lazy"
+        width="300"
+        height="300"
+      />
+    )}
+  </div>
+  <div class="product-info">
+    <h3 class="product-name">{displayName}</h3>
+    <p class="product-price">&euro;{product.price}</p>
+    <p class="product-benefits">{displayBenefits}</p>
+  </div>
+</a>
+</li>
+
+<style>
+  .product-card {
+    display: block;
+    background: var(--bg-primary);
+    border: 1px solid var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .product-card:hover {
+    border-color: var(--earth-light);
+    box-shadow: var(--shadow-md);
+  }
+
+  .product-card:focus-visible {
+    outline: 2px solid var(--sage);
+    outline-offset: 2px;
+  }
+
+  .product-image {
+    aspect-ratio: 3 / 4;
+    background: var(--bg-secondary);
+    overflow: hidden;
+  }
+
+  .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .product-card:hover .product-image img {
+    transform: scale(1.03);
+  }
+
+  .product-info {
+    padding: var(--space-xs) var(--space-sm);
+  }
+
+  .product-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.125rem;
+  }
+
+  .product-price {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--earth-warm);
+    margin-bottom: 0.125rem;
+  }
+
+  .product-benefits {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 768px) {
+    .product-info {
+      padding: var(--space-xs);
+    }
+
+    .product-name {
+      font-size: 0.8125rem;
+    }
+  }
+</style>

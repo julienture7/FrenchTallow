@@ -1,0 +1,111 @@
+---
+interface Props {
+  title: string;
+  slug: string;
+  product: string;
+  angle: string;
+  excerpt?: string;
+  date: string;
+  lang?: string;
+}
+
+const { title, slug, product, angle, excerpt, date, lang = 'en' } = Astro.props;
+
+const formattedDate = new Date(date).toLocaleDateString(
+  lang === 'fr' ? 'fr-FR' : 'en-US',
+  { month: 'short', day: 'numeric' }
+);
+
+const articleUrl = `/articles/${slug}/`;
+---
+
+<li class="article-item">
+<a href={articleUrl} class="article-card">
+  <div class="article-meta">
+    <span class="article-tag">{angle.replace(/_/g, ' ')}</span>
+    <span class="article-tag product">{product}</span>
+  </div>
+  <h3>{title}</h3>
+  {excerpt && <p class="article-excerpt">{excerpt}</p>}
+  <div class="article-footer">
+    <span>{formattedDate}</span>
+    <span class="article-read-more">Read &rarr;</span>
+  </div>
+</a>
+</li>
+
+<style>
+  .article-card {
+    display: block;
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    transition: box-shadow 0.2s ease;
+  }
+
+  .article-card:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  .article-card:focus-visible {
+    outline: 2px solid var(--sage);
+    outline-offset: 2px;
+  }
+
+  .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+  }
+
+  .article-tag {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+  }
+
+  .article-tag.product {
+    background: var(--earth-deep);
+    color: var(--text-inverse);
+  }
+
+  .article-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: var(--space-sm);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .article-excerpt {
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: var(--space-md);
+  }
+
+  .article-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--bg-secondary);
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+  }
+
+  .article-read-more {
+    color: var(--sage);
+    font-weight: 500;
+  }
+</style>

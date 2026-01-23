@@ -1,0 +1,96 @@
+---
+import { getTranslations } from '../data/translations';
+
+interface Props {
+  lang?: string;
+}
+
+const { lang = 'en' } = Astro.props;
+const t = getTranslations(lang);
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>FrenchTallowSoap</h3>
+        <p>{t.footerAbout}</p>
+      </div>
+      <div class="footer-section">
+        <h3>{t.footerShop}</h3>
+        <ul class="footer-links">
+          <li><a href="#products">{t.allBalms}</a></li>
+          <li><a href="https://www.etsy.com/shop/FrenchTallowSoap" target="_blank" rel="noopener">{t.visitEtsy}</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>{t.footerLearn}</h3>
+        <ul class="footer-links">
+          <li><a href="#articles">{t.readJournal}</a></li>
+          <li><a href="#why">{t.whyTallow}</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; {currentYear} FrenchTallowSoap. Made in France.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--earth-deep);
+    color: var(--text-inverse);
+    padding: var(--space-3xl) 0 var(--space-xl);
+  }
+
+  .footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-2xl);
+    margin-bottom: var(--space-2xl);
+  }
+
+  .footer-section h3 {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin-bottom: var(--space-md);
+    color: var(--text-inverse);
+  }
+
+  .footer-section p {
+    font-size: 0.9375rem;
+    color: #D5CCC5;
+    line-height: 1.6;
+  }
+
+  .footer-links {
+    list-style: none;
+  }
+
+  .footer-links li {
+    margin-bottom: var(--space-sm);
+  }
+
+  .footer-links a {
+    font-size: 0.9375rem;
+    color: #D5CCC5;
+    transition: color 0.15s ease;
+  }
+
+  .footer-links a:hover {
+    color: var(--text-inverse);
+  }
+
+  .footer-bottom {
+    padding-top: var(--space-xl);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    font-size: 0.875rem;
+  }
+
+  .footer-bottom p {
+    color: #D5CCC5;
+  }
+</style>

@@ -1,0 +1,140 @@
+---
+import { Image } from 'astro:assets';
+import { languages } from '../data/config';
+import { getTranslations } from '../data/translations';
+import logoImage from '../assets/images/logo.png';
+
+interface Props {
+  lang?: string;
+}
+
+const { lang = 'en' } = Astro.props;
+const t = getTranslations(lang);
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-logo" aria-label="FrenchTallowSoap home">
+      <Image src={logoImage} alt="" width={96} height={96} format="webp" quality={85} loading="eager" />
+      <span class="logo-text">French<span>Tallow</span>Soap</span>
+    </a>
+
+    <nav aria-label="Site">
+      <div class="lang-select-wrapper">
+        <label for="lang-select" class="visually-hidden">{t.selectLanguage}</label>
+        <select id="lang-select" class="lang-select">
+          {languages.map(({ code, name }) => (
+            <option value={code} selected={code === lang}>{name}</option>
+          ))}
+        </select>
+        <svg class="lang-select-icon" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const langSelect = document.getElementById('lang-select') as HTMLSelectElement;
+  if (langSelect) {
+    langSelect.addEventListener('change', (e) => {
+      const target = e.target as HTMLSelectElement;
+      const newLang = target.value;
+      // Save user's language preference
+      localStorage.setItem('preferredLang', newLang);
+      // Navigate to language-specific page
+      if (newLang === 'en') {
+        window.location.href = '/';
+      } else {
+        window.location.href = `/${newLang}/`;
+      }
+    });
+  }
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--bg-tertiary);
+  }
+
+  .header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-md) var(--space-lg);
+    max-width: var(--max-width);
+    margin: 0 auto;
+  }
+
+  .site-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .site-logo img {
+    height: 48px;
+    width: auto;
+  }
+
+  .logo-text {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .logo-text span {
+    color: var(--sage);
+  }
+
+  .lang-select-wrapper {
+    position: relative;
+  }
+
+  .lang-select {
+    appearance: none;
+    background: var(--bg-secondary);
+    border: 1px solid var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-xl) var(--space-sm) var(--space-md);
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    min-height: 44px;
+  }
+
+  .lang-select:focus {
+    outline: 2px solid var(--sage);
+    outline-offset: 2px;
+  }
+
+  .lang-select-icon {
+    position: absolute;
+    right: var(--space-md);
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 480px) {
+    .header-inner {
+      padding: var(--space-sm) var(--space-md);
+    }
+
+    .site-logo img {
+      height: 40px;
+    }
+
+    .logo-text {
+      font-size: 1.25rem;
+    }
+  }
+</style>

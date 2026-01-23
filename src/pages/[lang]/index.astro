@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeroSection from '../../components/HeroSection.astro';
+import WhySection from '../../components/WhySection.astro';
+import ProductsSection from '../../components/ProductsSection.astro';
+import ArticlesSection from '../../components/ArticlesSection.astro';
+import { getCollection } from 'astro:content';
+import { languages } from '../../data/config';
+import { getTranslations } from '../../data/translations';
+
+export function getStaticPaths() {
+  // Generate pages for all languages except English (which is at root)
+  return languages
+    .filter(lang => lang.code !== 'en')
+    .map(lang => ({
+      params: { lang: lang.code },
+      props: { langCode: lang.code, langName: lang.name }
+    }));
+}
+
+const { langCode, langName } = Astro.props;
+const t = getTranslations(langCode);
+
+// Get articles for this language
+const allArticles = await getCollection('articles');
+const langArticles = allArticles
+  .filter(article => article.data.language === langCode)
+  .sort((a, b) => new Date(b.data.generated_at).getTime() - new Date(a.data.generated_at).getTime());
+
+const articlesData = langArticles.map(article => ({
+  title: article.data.title,
+  slug: article.data.slug,
+  product: article.data.product,
+  angle: article.data.angle,
+  generated_at: article.data.generated_at,
+  body: article.data.body
+}));
+---
+
+<BaseLayout
+  title={`FrenchTallowSoap — ${t.heroTitle}`}
+  description={t.heroText}
+  lang={langCode}
+  canonicalUrl={`https://frenchtallow.com/${langCode}/`}
+>
+  <HeroSection lang={langCode} />
+  <WhySection lang={langCode} />
+  <ProductsSection lang={langCode} />
+  <ArticlesSection lang={langCode} articles={articlesData} />
+</BaseLayout>
