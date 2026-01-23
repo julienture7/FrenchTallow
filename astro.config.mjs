@@ -8,7 +8,7 @@ export default defineConfig({
   integrations: [sitemap()],
   output: 'static',
   build: {
-    assets: 'assets'
+    inlineStylesheets: 'always'
   },
   vite: {
     build: {

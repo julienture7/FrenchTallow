@@ -1,8 +1,8 @@
 ---
-import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { getTranslations } from '../data/translations';
+import globalStyles from '../styles/global.css?inline';
 
 interface Props {
   title: string;
@@ -36,6 +36,9 @@ const fullCanonicalUrl = canonicalUrl || siteUrl;
   <title>{title}</title>
   <meta name="description" content={description}>
   <link rel="canonical" href={fullCanonicalUrl}>
+
+  <!-- Inline CSS to eliminate render-blocking -->
+  <style set:html={globalStyles}></style>
 
   <!-- Open Graph -->
   <meta property="og:title" content={title}>
