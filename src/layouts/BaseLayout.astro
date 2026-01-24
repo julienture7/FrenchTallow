@@ -127,14 +127,16 @@ const fullCanonicalUrl = canonicalUrl || siteUrl;
       // Skip if user already chose a language (stored in localStorage)
       if (localStorage.getItem('preferredLang')) return;
 
-      // Get current path language
-      const pathLang = window.location.pathname.split('/')[1];
-      if (pathLang && pathLang.length === 2) return; // Already on a language page
+      const pathname = window.location.pathname;
+
+      // Skip if not on root homepage (exclude articles, language pages, etc.)
+      // Only run on '/' or '/index.html'
+      if (pathname !== '/' && pathname !== '/index.html') return;
 
       // Get browser language
       const browserLang = navigator.language.slice(0, 2);
 
-      // Check if supported
+      // Check if supported and not English
       if (supportedLanguages.includes(browserLang)) {
         // Redirect to language-specific version
         window.location.href = '/' + browserLang + '/';
